@@ -202,6 +202,11 @@ export default function Essentials({ progress, onUpdateProgress, onOpenLanguageS
         })
       });
       
+      const contentType = response.headers.get('content-type');
+      if (!response.ok || !contentType || !contentType.includes('application/json')) {
+        throw new Error(`Failed to generate vocabulary (${response.status})`);
+      }
+
       const data = await response.json();
       if (data && data.words && Array.isArray(data.words)) {
         // Map any generated words to VocabItem interface

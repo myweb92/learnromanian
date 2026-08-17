@@ -474,6 +474,11 @@ async function startServer() {
     }
   });
 
+  // Prevent API requests from falling through to the HTML SPA fallback
+  app.all("/api/*", (req, res) => {
+    res.status(404).json({ error: `API endpoint ${req.originalUrl} not found` });
+  });
+
   // Hot module replacement handles mounting Vite dev server, other routes serve production static files
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
