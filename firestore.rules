@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Global Safety Net: Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Transversal Priming Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 3. UserProfile Hardened Validation
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['xp', 'streak', 'lastActiveDate', 'completedScenarios', 'inProgressScenarios', 'favorites', 'badges', 'dailyGoalXp', 'dailyXpGained'])
+          && data.keys().size() >= 9 && data.keys().size() <= 20
+          && data.xp is int && data.xp >= 0
+          && data.streak is int && data.streak >= 0
+          && (data.lastActiveDate == null || (data.lastActiveDate is string && data.lastActiveDate.size() <= 64))
+          && data.completedScenarios is list
+          && data.inProgressScenarios is list
+          && data.favorites is list
+          && data.badges is list
+          && data.dailyGoalXp is int && data.dailyGoalXp >= 0
+          && data.dailyXpGained is int && data.dailyXpGained >= 0
+          && (!('isPremium' in data) || data.isPremium is bool)
+          && (!('targetLanguage' in data) || (data.targetLanguage is string && data.targetLanguage.size() <= 128))
+          && (!('sourceLanguage' in data) || (data.sourceLanguage is string && data.sourceLanguage.size() <= 128))
+          && (!('completedScenariosByLanguage' in data) || data.completedScenariosByLanguage is map)
+          && (!('inProgressScenariosByLanguage' in data) || data.inProgressScenariosByLanguage is map)
+          && (!('assessedLevel' in data) || (data.assessedLevel is string && data.assessedLevel.size() <= 10))
+          && (!('lastSelectedScenarioId' in data) || (data.lastSelectedScenarioId is string && data.lastSelectedScenarioId.size() <= 128));
+    }
+
+    // 4. Match Blocks
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if false;
+
+      // SrsFlashcard validation
+      match /flashcards/{flashcardId} {
+        function isValidFlashcard(data) {
+          return data.keys().hasAll(['id', 'romanian', 'english', 'context', 'contextTranslation', 'box', 'nextReviewDate'])
+              && data.keys().size() >= 7 && data.keys().size() <= 10
+              && data.id is string && data.id.size() <= 128
+              && data.romanian is string && data.romanian.size() <= 1000
+              && data.english is string && data.english.size() <= 1000
+              && data.context is string && data.context.size() <= 2000
+              && data.contextTranslation is string && data.contextTranslation.size() <= 2000
+              && data.box is int && data.box >= 1 && data.box <= 5
+              && data.nextReviewDate is string && data.nextReviewDate.size() <= 128;
+        }
+
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(flashcardId) && isValidFlashcard(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(flashcardId) && isValidFlashcard(request.resource.data);
+        allow delete: if isOwner(userId) && isValidId(flashcardId);
+      }
+
+      // PracticeDay validation
+      match /practice_days/{dateString} {
+        function isValidPracticeDay(data) {
+          return data.keys().hasAll(['date', 'xpGained', 'timestamp'])
+              && data.keys().size() >= 3 && data.keys().size() <= 5
+              && data.date is string && data.date.size() <= 64
+              && data.xpGained is int && data.xpGained >= 0
+              && data.timestamp is string && data.timestamp.size() <= 128;
+        }
+
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(dateString) && isValidPracticeDay(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(dateString) && isValidPracticeDay(request.resource.data);
+        allow delete: if isOwner(userId) && isValidId(dateString);
+      }
+    }
+  }
+}

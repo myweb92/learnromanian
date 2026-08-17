@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Stores core progress data, XP, streak achievements, and list of scenario progress.",
+      "type": "object",
+      "properties": {
+        "xp": {
+          "type": "integer",
+          "description": "The lifetime cumulative experience points earned by the user."
+        },
+        "streak": {
+          "type": "integer",
+          "description": "The consecutive number of days the user has been active."
+        },
+        "lastActiveDate": {
+          "type": "string",
+          "description": "The last calendar date (YYYY-MM-DD) when the user earned XP."
+        },
+        "completedScenarios": {
+          "type": "array",
+          "description": "List of finished scenario IDs. Strictly capped by the 100 library count."
+        },
+        "inProgressScenarios": {
+          "type": "array",
+          "description": "List of currently active/in-progress scenario IDs."
+        },
+        "favorites": {
+          "type": "array",
+          "description": "User's favorited scenario IDs."
+        },
+        "badges": {
+          "type": "array",
+          "description": "Unlocked badge/medal IDs."
+        },
+        "dailyGoalXp": {
+          "type": "integer",
+          "description": "Target XP for a single day."
+        },
+        "dailyXpGained": {
+          "type": "integer",
+          "description": "XP gained in the current day."
+        },
+        "isPremium": {
+          "type": "boolean",
+          "description": "True if user has an active premium subscription, unlocking advanced scenarios, Leitner boxes, and coach chatter."
+        }
+      },
+      "required": ["xp", "streak", "lastActiveDate", "completedScenarios", "inProgressScenarios", "favorites", "badges", "dailyGoalXp", "dailyXpGained"]
+    },
+    "SrsFlashcard": {
+      "title": "SrsFlashcard",
+      "description": "An individual physical leitner box vocabulary spaced repetition card.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "romanian": {
+          "type": "string"
+        },
+        "english": {
+          "type": "string"
+        },
+        "context": {
+          "type": "string"
+        },
+        "contextTranslation": {
+          "type": "string"
+        },
+        "box": {
+          "type": "integer"
+        },
+        "nextReviewDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "romanian", "english", "context", "contextTranslation", "box", "nextReviewDate"]
+    },
+    "PracticeDay": {
+      "title": "PracticeDay",
+      "description": "A specific date on which the user engaged with the application.",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The formatted calendar date (YYYY-MM-DD)."
+        },
+        "xpGained": {
+          "type": "integer",
+          "description": "Points earned during this specific practice date."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The exact full timestamp of creation metadata."
+        }
+      },
+      "required": ["date", "xpGained", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Root user profiles representing user gamified details."
+    },
+    "/users/{userId}/flashcards/{flashcardId}": {
+      "schema": "SrsFlashcard",
+      "description": "Sub-collection preserving Leitner box items for the specific user."
+    },
+    "/users/{userId}/practice_days/{dateString}": {
+      "schema": "PracticeDay",
+      "description": "Sub-collection logging actual historical dates of practice."
+    }
+  }
+}

@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;705;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #f7f9fa; /* Sleek duolingo off-white */
+}
+
+/* Custom Delightful Tactile Buttons - Duolingo 3D button feel */
+.btn-tactile-emerald {
+  border-bottom: 4px solid #3b9c01;
+  background-color: #58cc02;
+  color: white;
+  font-weight: 800;
+  font-family: var(--font-display);
+  border-radius: 1rem;
+  transition: all 100ms ease;
+  user-select: none;
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.05);
+}
+.btn-tactile-emerald:hover {
+  background-color: #61e002;
+}
+.btn-tactile-emerald:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.btn-tactile-blue {
+  border-bottom: 4px solid #1899d6;
+  background-color: #1cb0f6;
+  color: white;
+  font-weight: 800;
+  font-family: var(--font-display);
+  border-radius: 1rem;
+  transition: all 100ms ease;
+  user-select: none;
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.05);
+}
+.btn-tactile-blue:hover {
+  background-color: #24bffd;
+}
+.btn-tactile-blue:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.btn-tactile-indigo {
+  border-bottom: 4px solid #4338ca;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 800;
+  font-family: var(--font-display);
+  border-radius: 1rem;
+  transition: all 100ms ease;
+  user-select: none;
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.05);
+}
+.btn-tactile-indigo:hover {
+  background-color: #6366f1;
+}
+.btn-tactile-indigo:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.btn-tactile-orange {
+  border-bottom: 4px solid #e07500;
+  background-color: #ff9600;
+  color: white;
+  font-weight: 800;
+  font-family: var(--font-display);
+  border-radius: 1rem;
+  transition: all 100ms ease;
+  user-select: none;
+  cursor: pointer;
+}
+.btn-tactile-orange:hover {
+  background-color: #ffa61a;
+}
+.btn-tactile-orange:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+}
+
+.btn-tactile-gray {
+  border-bottom: 4px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #475569;
+  border-top: 1px solid #e2e8f0;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  font-weight: 800;
+  font-family: var(--font-display);
+  border-radius: 1rem;
+  transition: all 100ms ease;
+  user-select: none;
+  cursor: pointer;
+}
+.btn-tactile-gray:hover {
+  background-color: #f8fafc;
+}
+.btn-tactile-gray:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+}
+
+.card-tactile-slate {
+  background-color: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-bottom-width: 6px;
+  border-radius: 1.25rem;
+  transition: all 200ms ease;
+}
+.card-tactile-slate:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.card-tactile-active {
+  border: 2px solid #1cb0f6;
+  border-bottom-width: 6px;
+  background-color: #f0f9ff;
+}
+
+/* Rounded, friendly scrolls */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* 3D Flashcard Flip Style */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Glossy glassmorphism overlay */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Soft ambient glows for premium states */
+.glow-indigo {
+  box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.15);
+}
+.glow-success {
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.15);
+}
+.glow-royal {
+  box-shadow: 0 15px 35px -5px rgba(99, 102, 241, 0.25), 0 5px 15px -5px rgba(245, 158, 11, 0.15);
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.animate-float {
+  animation: float-gentle 3s ease-in-out infinite;
+}
+

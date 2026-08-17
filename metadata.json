@@ -1,0 +1,6 @@
+{
+  "name": "Learn with Niran",
+  "description": "A beautiful, premium mobile-web app for learning Romanian using 100 immersive, parallel real-life scenarios with TTS, flashcards, speaking practice, and AI role-play.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
