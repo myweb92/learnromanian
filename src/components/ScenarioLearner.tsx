@@ -186,9 +186,13 @@ export default function ScenarioLearner({
       const sourceLng = progress.sourceLanguage || "English";
       try {
         const response = await fetch(`/api/scenario/${scenario.id}?targetLanguage=${encodeURIComponent(targetLng)}&sourceLanguage=${encodeURIComponent(sourceLng)}`);
-        const contentType = response.headers.get('content-type');
-        if (!response.ok || !contentType || !contentType.includes('application/json')) {
-          throw new Error(`Server returned status ${response.status}`);
+        if (!response.ok) {
+          let errText = `Server returned status ${response.status}`;
+          try {
+            const errJson = await response.json();
+            if (errJson.error) errText = errJson.error;
+          } catch (_) {}
+          throw new Error(errText);
         }
         const data = await response.json();
         if (data.error) {
@@ -763,8 +767,7 @@ export default function ScenarioLearner({
         })
       });
 
-      const contentType = response.headers.get('content-type');
-      if (!response.ok || !contentType || !contentType.includes('application/json')) {
+      if (!response.ok) {
         throw new Error("Tutor AI server busy.");
       }
 

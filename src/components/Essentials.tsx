@@ -202,8 +202,7 @@ export default function Essentials({ progress, onUpdateProgress, onOpenLanguageS
         })
       });
       
-      const contentType = response.headers.get('content-type');
-      if (!response.ok || !contentType || !contentType.includes('application/json')) {
+      if (!response.ok) {
         throw new Error(`Failed to generate vocabulary (${response.status})`);
       }
 
