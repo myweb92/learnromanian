@@ -1,8 +1,13 @@
-import { ScenarioContent } from '../types';
+import { ScenarioContent, QuizQuestion } from '../types';
 
-export function generateFallbackContent(catalogItem: any): ScenarioContent {
+export function generateFallbackContent(catalogItem: any, targetLanguage: string = "Romanian", sourceLanguage: string = "English"): ScenarioContent {
   const { title, romanianTitle, level, category, description, id } = catalogItem;
   
+  // If target language is NOT Romanian, generate tailored fallback content for that target language
+  if (targetLanguage.toLowerCase() !== "romanian") {
+    return generateMultilingualFallback(catalogItem, targetLanguage, sourceLanguage);
+  }
+
   let romanianText = "";
   let englishText = "";
   let paragraphs: { romanian: string; english: string }[] = [];
@@ -354,6 +359,140 @@ export function generateFallbackContent(catalogItem: any): ScenarioContent {
     id: id || "sc-fallback",
     romanianText,
     englishText,
+    paragraphs,
+    vocabulary,
+    quiz
+  };
+}
+
+function generateMultilingualFallback(catalogItem: any, targetLanguage: string, sourceLanguage: string): ScenarioContent {
+  const title = catalogItem.title || "Interactive Practice";
+  const level = catalogItem.level || "A1/A2";
+  const category = catalogItem.category || "General";
+  const description = catalogItem.description || "Interactive language exercise";
+
+  const targetUpper = targetLanguage.toUpperCase();
+  const lowerTarget = targetLanguage.toLowerCase();
+
+  // Basic greeting & core vocabulary per language
+  let greetings = "Hello / Welcome";
+  let thankYou = "Thank you";
+  let study = "Study / Practice";
+  let good = "Good / Excellent";
+  let keyWord1 = "lesson";
+  let keyWord2 = "conversation";
+
+  if (lowerTarget.includes("dutch") || lowerTarget.includes("nederlands")) {
+    greetings = "Welkom"; thankYou = "Dank je wel"; study = "Studeren"; good = "Uitstekend"; keyWord1 = "les"; keyWord2 = "gesprek";
+  } else if (lowerTarget.includes("spanish") || lowerTarget.includes("español")) {
+    greetings = "Bienvenido"; thankYou = "Muchas gracias"; study = "Estudiar"; good = "Excelente"; keyWord1 = "lección"; keyWord2 = "conversación";
+  } else if (lowerTarget.includes("german") || lowerTarget.includes("deutsch")) {
+    greetings = "Willkommen"; thankYou = "Vielen Dank"; study = "Lernen"; good = "Ausgezeichnet"; keyWord1 = "Lektion"; keyWord2 = "Gespräch";
+  } else if (lowerTarget.includes("french") || lowerTarget.includes("français")) {
+    greetings = "Bienvenue"; thankYou = "Merci beaucoup"; study = "Étudier"; good = "Excellent"; keyWord1 = "leçon"; keyWord2 = "conversation";
+  } else if (lowerTarget.includes("italian")) {
+    greetings = "Benvenuto"; thankYou = "Grazie mille"; study = "Studiare"; good = "Eccellente"; keyWord1 = "lezione"; keyWord2 = "conversazione";
+  } else if (lowerTarget.includes("japanese")) {
+    greetings = "ようこそ (Yōkoso)"; thankYou = "ありがとうございます (Arigatō)"; study = "勉強 (Benkyō)"; good = "素晴らしい (Subarashii)"; keyWord1 = "レッスン (Ressun)"; keyWord2 = "会話 (Kaiwa)";
+  } else if (lowerTarget.includes("portuguese")) {
+    greetings = "Bem-vindo"; thankYou = "Muito obrigado"; study = "Estudar"; good = "Excelente"; keyWord1 = "lição"; keyWord2 = "conversação";
+  }
+
+  const p1_target = `${greetings}! Welcome to this study module focused on "${title}". This interactive lesson is designed for level ${level} in ${targetLanguage}.`;
+  const p1_source = `Welcome to this study module focused on "${title}". This interactive lesson is designed for level ${level} in ${targetLanguage}.`;
+
+  const p2_target = `${study} and repeating key vocabulary step by step builds strong confidence in real ${targetLanguage} dialogues: ${description}.`;
+  const p2_source = `Studying and repeating key vocabulary step by step builds strong confidence in real ${targetLanguage} dialogues: ${description}.`;
+
+  const p3_target = `${good}! Practice daily with your tutor Niran to achieve fluency and master everyday ${targetLanguage} expressions. ${thankYou}!`;
+  const p3_source = `Excellent! Practice daily with your tutor Niran to achieve fluency and master everyday ${targetLanguage} expressions. Thank you!`;
+
+  const paragraphs = [
+    { romanian: p1_target, english: p1_source },
+    { romanian: p2_target, english: p2_source },
+    { romanian: p3_target, english: p3_source }
+  ];
+
+  const vocabulary = [
+    { romanian: greetings, english: "Welcome / Hello", context: `${greetings}! Welcome to our class.`, contextTranslation: "Welcome! Welcome to our class." },
+    { romanian: thankYou, english: "Thank you", context: `${thankYou} for your help today.`, contextTranslation: "Thank you for your help today." },
+    { romanian: study, english: "To study / Practice", context: `We ${study} ${targetLanguage} every day.`, contextTranslation: `We study ${targetLanguage} every day.` },
+    { romanian: good, english: "Excellent / Good", context: `Your ${targetLanguage} pronunciation is ${good}!`, contextTranslation: `Your ${targetLanguage} pronunciation is excellent!` },
+    { romanian: keyWord1, english: "Lesson", context: `Today's ${keyWord1} covers ${title}.`, contextTranslation: `Today's lesson covers ${title}.` },
+    { romanian: keyWord2, english: "Conversation", context: `Let's practice a real ${keyWord2}.`, contextTranslation: "Let's practice a real conversation." }
+  ];
+
+  const quiz: QuizQuestion[] = [
+    {
+      id: "q1",
+      question: `What is the main topic of this ${targetLanguage} lesson module?`,
+      options: [title, "Advanced Quantum Physics", "Unrelated Grocery Shopping", "History of Ancient Navigation"],
+      correctAnswerIndex: 0,
+      explanation: `The lesson focuses on "${title}".`,
+      type: "multiple-choice"
+    },
+    {
+      id: "q2",
+      question: `Which target language are you currently practicing in this module?`,
+      options: ["English", targetLanguage, "Latin", "Ancient Greek"],
+      correctAnswerIndex: 1,
+      explanation: `You selected ${targetLanguage} as your target learning language.`,
+      type: "multiple-choice"
+    },
+    {
+      id: "q3",
+      question: `What CEFR proficiency level is recommended for this "${title}" unit?`,
+      options: [level, "C2 Native Scholar", "Unspecified", "Expert Level"],
+      correctAnswerIndex: 0,
+      explanation: `The unit is tailored for level ${level}.`,
+      type: "multiple-choice"
+    },
+    {
+      id: "q4",
+      question: `How do you say "${thankYou}" in ${targetLanguage}?`,
+      options: [thankYou, "Adios", "Au revoir", "Sayonara"],
+      correctAnswerIndex: 0,
+      explanation: `"${thankYou}" is the standard expression in ${targetLanguage}.`,
+      type: "multiple-choice"
+    },
+    {
+      id: "q5",
+      question: `Fill in the blank: "Regular daily practice builds real confidence in ${targetLanguage} ____."`,
+      options: ["conversations", "silence", "isolation", "forgetfulness"],
+      correctAnswerIndex: 0,
+      explanation: "Practice builds confidence in real conversations.",
+      type: "fill-in-the-blank"
+    },
+    {
+      id: "q6",
+      question: `Who is your virtual AI tutor guiding your ${targetLanguage} learning journey?`,
+      options: ["Niran", "Unknown stranger", "Robot 3000", "Guest user"],
+      correctAnswerIndex: 0,
+      explanation: "Niran is your language tutor in Learn with Niran.",
+      type: "multiple-choice"
+    },
+    {
+      id: "q7",
+      question: `Which category does "${title}" fall under in the curriculum?`,
+      options: [category, "Space Exploration", "Deep Sea Diving", "Aviation Maintenance"],
+      correctAnswerIndex: 0,
+      explanation: `This scenario is categorized under ${category}.`,
+      type: "multiple-choice"
+    },
+    {
+      id: "q8",
+      question: `Complete the phrase: "${greetings}! Welcome to our interactive ${targetLanguage} ____."`,
+      options: [keyWord1, "car", "airplane", "museum"],
+      correctAnswerIndex: 0,
+      explanation: `The phrase completes with "${keyWord1}" (lesson).`,
+      type: "fill-in-the-blank"
+    }
+  ];
+
+  return {
+    id: catalogItem.id || "sc-fallback",
+    romanianText: `${p1_target}\n\n${p2_target}\n\n${p3_target}`,
+    englishText: `${p1_source}\n\n${p2_source}\n\n${p3_source}`,
     paragraphs,
     vocabulary,
     quiz

@@ -342,24 +342,21 @@ async function startServer() {
     } catch (error: any) {
       console.warn("Error fetching or generating scenario with Gemini:", error);
       
-      if (targetLanguage.toLowerCase() === "romanian") {
-        console.warn("Activating offline premium fallback for Romanian.");
-        const catalogItem = SCENARIOS.find((item) => item.id === scenarioId);
-        if (catalogItem) {
-          try {
-            const fallbackContent = generateFallbackContent(catalogItem);
-            return res.json({
-              source: "offline_fallback",
-              content: fallbackContent
-            });
-          } catch (fallbackError: any) {
-            console.error("Critical fallback failed:", fallbackError);
-          }
+      const catalogItem = SCENARIOS.find((item) => item.id === scenarioId);
+      if (catalogItem) {
+        try {
+          console.warn(`Activating fallback content generator for targetLanguage: ${targetLanguage}`);
+          const fallbackContent = generateFallbackContent(catalogItem, targetLanguage, sourceLanguage);
+          return res.json({
+            source: "offline_fallback",
+            content: fallbackContent
+          });
+        } catch (fallbackError: any) {
+          console.error("Critical fallback failed:", fallbackError);
         }
       }
       
-      // If not Romanian or fallback fails, return the error so the UI shows it instead of showing Romanian for Dutch
-      res.status(500).json({ error: "Failed to generate AI content. Please ensure you have set your GEMINI_API_KEY in the AI Studio Settings to learn languages other than Romanian." });
+      res.status(500).json({ error: "Failed to generate lesson unit. Please try refreshing or selecting a scenario from the library." });
     }
   });
 
