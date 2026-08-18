@@ -311,20 +311,35 @@ async function startServer() {
       };
 
       const prompt = `
-        You are a multilingual AI curriculum generator. Generate a parallel study lesson for learning "${targetLanguage}" using "${sourceLanguage}" as the translation/support language.
+        You are an expert CEFR-aligned multilingual curriculum designer. Generate a parallel study lesson for learning "${targetLanguage}" using "${sourceLanguage}" as the translation/support language.
 
         TOPIC CONTEXT:
         - Topic: "${catalogItem.title}"
         - Category: "${catalogItem.category}"
-        - Level: "${catalogItem.level}"
-        - Goal: "${catalogItem.description}"
+        - CEFR Level: "${catalogItem.level}"
+        - Description: "${catalogItem.description}"
         
+        CRITICAL CEFR LEVEL CONSTRAINTS:
+        - If Level is "A1" (Absolute Beginner):
+          * Sentences MUST be EXTREMELY short and simple (4 to 7 words per sentence maximum).
+          * Use Present Tense ONLY and basic high-frequency everyday words (e.g., hello, please, thank you, I want, coffee, water, where is, how much).
+          * DO NOT use complex, academic, or literary vocabulary (avoid words like "gastronomică", "delicatese", "savurăm"). Keep it gentle and accessible!
+          * Total word count: 60-100 words total across 3 short paragraphs.
+        - If Level is "A2" (Elementary):
+          * Simple connected sentences, basic past/future tenses, everyday routine & shopping vocabulary. Word count: 90-130 words.
+        - If Level is "B1" (Intermediate):
+          * Connected paragraphs, expression of personal opinions, plans, work and travel experiences. Word count: 130-180 words.
+        - If Level is "B2" (Upper-Intermediate):
+          * Complex sentence structures, idiomatic phrases, detailed opinions and nuance. Word count: 180-250 words.
+        - If Level is "C1" / "C2" (Advanced):
+          * Sophisticated, academic or technical vocabulary and complex syntax. Word count: 200-300 words.
+
         DIRECTIONS:
-        1. "romanianText": A cohesive narrative story or conversational dialogue in native ${targetLanguage} illustrating the topic context. Word count: 120-250 words.
+        1. "romanianText": A cohesive narrative story or conversational dialogue in native ${targetLanguage} strictly respecting the CEFR Level constraint.
         2. "englishText": Correspondent exact translation of the text in ${sourceLanguage}.
         3. "paragraphs": Split the narrative into logical paragraphs, with { "romanian": "(paragraph in ${targetLanguage})", "english": "(translation in ${sourceLanguage})" } for each.
-        4. "vocabulary": Extract 6 to 10 key terms/phrases from the text. Under "romanian" place the phrase in ${targetLanguage}, and under "english" place its translation in ${sourceLanguage}. Provide "context" in ${targetLanguage} and "contextTranslation" in ${sourceLanguage}.
-        5. "quiz": Provide exactly 8 multiple-choice or fill-in-the-blank comprehension/grammar questions based on the scenario. Output "question" (in either ${targetLanguage} or ${sourceLanguage}), 4 plausible "options", "correctAnswerIndex", and detailed "explanation" in ${sourceLanguage}.
+        4. "vocabulary": Extract 6 key terms/phrases from the text appropriate for this CEFR level. Under "romanian" place the term in ${targetLanguage}, and under "english" place its translation in ${sourceLanguage}. Provide "context" in ${targetLanguage} and "contextTranslation" in ${sourceLanguage}.
+        5. "quiz": Provide exactly 4 simple, level-appropriate comprehension questions based on the scenario. Output "question" (in ${sourceLanguage} or ${targetLanguage}), 4 clear "options", "correctAnswerIndex", and a clear "explanation" in ${sourceLanguage}.
         
         IMPORTANT: Map "${targetLanguage}" content into JSON keys named "romanian" / "romanianText" and "${sourceLanguage}" content into JSON keys named "english" / "englishText" for system compatibility.
       `;

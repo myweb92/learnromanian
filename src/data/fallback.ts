@@ -16,8 +16,124 @@ export function generateFallbackContent(catalogItem: any, targetLanguage: string
 
   const safeTitle = romanianTitle || title;
 
-  // 1. Core narratives tailored perfectly by categories
-  if (category === "Food & Dining") {
+  // 0. Dedicated CEFR A1 (Absolute Beginner) gentle lessons
+  if (level === "A1") {
+    if (category === "Food & Dining") {
+      paragraphs = [
+        {
+          romanian: `Bună ziua! Sunt la un restaurant din oraș pentru lecția: "${safeTitle}". Vreau să mănânc ceva bun.`,
+          english: `Hello! I am at a city restaurant for our lesson: "${title}". I want to eat something good.`
+        },
+        {
+          romanian: `Chelnerul vine la masă. El întreabă politicos: „Ce doriți?”. Eu spun: „O cafea și o prăjitură, vă rog.”`,
+          english: `The waiter comes to the table. He asks politely: "What would you like?". I say: "A coffee and a cake, please."`
+        },
+        {
+          romanian: `Mâncarea este caldă și foarte bună. La final cer nota: „Nota de plată, vă rog!”. Mulțumesc mult!`,
+          english: `The food is warm and very good. At the end I ask for the bill: "The bill, please!". Thank you very much!`
+        }
+      ];
+      vocabulary = [
+        { romanian: "bună ziua", english: "hello / good day", context: "Bună ziua, ce mai faceți?", contextTranslation: "Hello, how are you doing?" },
+        { romanian: "vă rog", english: "please", context: "O apă plată, vă rog!", contextTranslation: "A still water, please!" },
+        { romanian: "mulțumesc", english: "thank you", context: "Mulțumesc mult pentru ajutor.", contextTranslation: "Thank you very much for help." },
+        { romanian: "cafea", english: "coffee", context: "Eu beau o cafea dimineața.", contextTranslation: "I drink a coffee in the morning." },
+        { romanian: "mâncare", english: "food", context: "Această mâncare este caldă.", contextTranslation: "This food is warm." },
+        { romanian: "nota de plată", english: "the bill", context: "Aduceți nota de plată, vă rog.", contextTranslation: "Bring the bill, please." }
+      ];
+      quiz = [
+        {
+          id: "q1",
+          question: "Unde are loc această scurtă lecție?",
+          options: ["La un restaurant din oraș", "La gară", "În aeroport", "La școală"],
+          correctAnswerIndex: 0,
+          explanation: "The text starts with: 'Sunt la un restaurant din oraș...'",
+          type: "multiple-choice"
+        },
+        {
+          id: "q2",
+          question: "Ce comandă persoana în text?",
+          options: ["O cafea și o prăjitură", "Un bilet de autobuz", "O carte de povești", "O rochie nouă"],
+          correctAnswerIndex: 0,
+          explanation: "The text says: 'O cafea și o prăjitură, vă rog.'",
+          type: "multiple-choice"
+        },
+        {
+          id: "q3",
+          question: "Ce cuvânt politicos folosești când ceri ceva?",
+          options: ["Vă rog", "Unde", "Nu", "Ieri"],
+          correctAnswerIndex: 0,
+          explanation: "'Vă rog' means 'please' in Romanian.",
+          type: "multiple-choice"
+        },
+        {
+          id: "q4",
+          question: "Completează cuvântul: 'Nota de ____, vă rog!'",
+          options: ["plată", "stradă", "apă", "casă"],
+          correctAnswerIndex: 0,
+          explanation: "'Nota de plată' means 'the bill'.",
+          type: "fill-in-the-blank"
+        }
+      ];
+    } else {
+      paragraphs = [
+        {
+          romanian: `Bună! Astăzi învățăm despre: "${safeTitle}". Este o zi frumoasă în România.`,
+          english: `Hello! Today we learn about: "${title}". It is a beautiful day in Romania.`
+        },
+        {
+          romanian: `Eu vorbesc puțină limba română. Oamenii sunt foarte amabili și mă ajută cu bucurie.`,
+          english: `I speak a little Romanian language. People are very kind and help me with joy.`
+        },
+        {
+          romanian: `Punct cu punct, exersăm cuvinte simple în fiecare zi. Învățarea este ușoară și plăcută!`,
+          english: `Step by step, we practice simple words every day. Learning is easy and pleasant!`
+        }
+      ];
+      vocabulary = [
+        { romanian: "bună", english: "hi / hello", context: "Bună! Ce faci?", contextTranslation: "Hi! How are you?" },
+        { romanian: "zi frumoasă", english: "beautiful day", context: "Este o zi frumoasă afaceri.", contextTranslation: "It is a beautiful day." },
+        { romanian: "limba română", english: "Romanian language", context: "Mă bucur să învăț limba română.", contextTranslation: "I am glad to learn the Romanian language." },
+        { romanian: "amabil", english: "kind / polite", context: "Profesorul este foarte amabil.", contextTranslation: "The teacher is very kind." },
+        { romanian: "în fiecare zi", english: "every day", context: "Citesc în fiecare zi.", contextTranslation: "I read every day." },
+        { romanian: "ușor", english: "easy", context: "Acest exercițiu este ușor.", contextTranslation: "This exercise is easy." }
+      ];
+      quiz = [
+        {
+          id: "q1",
+          question: "Despre ce este vorba în această lecție A1?",
+          options: ["Exersarea cuvintelor simple în română", "Rezervarea unui bilet de avion", "Un discurs despre economie", "O rețetă complicată"],
+          correctAnswerIndex: 0,
+          explanation: "The text emphasizes practicing simple words every day.",
+          type: "multiple-choice"
+        },
+        {
+          id: "q2",
+          question: "Cum sunt oamenii menționați în text?",
+          options: ["Foarte amabili", "Supărați", "Ocupați", "Absenți"],
+          correctAnswerIndex: 0,
+          explanation: "The text states: 'Oamenii sunt foarte amabili...'",
+          type: "multiple-choice"
+        },
+        {
+          id: "q3",
+          question: "Ce înseamnă 'zi frumoasă'?",
+          options: ["Beautiful day", "Dark night", "Heavy rain", "Cold winter"],
+          correctAnswerIndex: 0,
+          explanation: "'Zi frumoasă' translates to 'beautiful day'.",
+          type: "multiple-choice"
+        },
+        {
+          id: "q4",
+          question: "Completează propoziția: 'Învățarea este ____ și plăcută!'",
+          options: ["ușoară", "grea", "imposibilă", "veche"],
+          correctAnswerIndex: 0,
+          explanation: "The text concludes with 'Învățarea este ușoară și plăcută!'",
+          type: "fill-in-the-blank"
+        }
+      ];
+    }
+  } else if (category === "Food & Dining") {
     paragraphs = [
       {
         romanian: `Mă aflu la o unitate gastronomică primitoare din inima orașului pentru activitatea noastră: "${safeTitle}". Chelnerul se apropie zâmbitor, ne salută politicos în română și ne aduce meniul zilei plin cu delicatese locale.`,
