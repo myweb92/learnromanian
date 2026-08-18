@@ -30,6 +30,7 @@ import { BADGES } from '../data/badges';
 import confetti from 'canvas-confetti';
 import AdBanner from './AdBanner';
 import { getLanguageFlag } from './Library';
+import { generateFallbackContent } from '../data/fallback';
 
 interface ScenarioLearnerProps {
   scenario: Scenario;
@@ -186,19 +187,24 @@ export default function ScenarioLearner({
       const sourceLng = progress.sourceLanguage || "English";
       try {
         const response = await fetch(`/api/scenario/${scenario.id}?targetLanguage=${encodeURIComponent(targetLng)}&sourceLanguage=${encodeURIComponent(sourceLng)}`);
-        if (!response.ok) {
-          let errText = `Server returned status ${response.status}`;
+        const text = await response.text();
+
+        let parsedData: any = null;
+        if (text && !text.trim().startsWith('<') && !text.trim().startsWith('<!doctype')) {
           try {
-            const errJson = await response.json();
-            if (errJson.error) errText = errJson.error;
-          } catch (_) {}
-          throw new Error(errText);
+            parsedData = JSON.parse(text);
+          } catch (_) {
+            parsedData = null;
+          }
         }
-        const data = await response.json();
-        if (data.error) {
-          throw new Error(data.error);
+
+        if (parsedData && parsedData.content) {
+          setContent(parsedData.content);
+        } else {
+          // Fallback generator for static environments or missing API routes
+          const fallbackData = generateFallbackContent(scenario, targetLng, sourceLng);
+          setContent(fallbackData);
         }
-        setContent(data.content);
         
         // Initializing chat with warm introduction in chosen language combo
         const welcomeText = `Hello! I'm Niran, your virtual language tutor. 🎓\nLet's practice a real conversation about: **"${scenario.title}"**. Try chatting with me in **${targetLng}** – I will formulate helpful replies and provide gentle spelling or grammar corrections in **${sourceLng}**! How would you like to start?`;
